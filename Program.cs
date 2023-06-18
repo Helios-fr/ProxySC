@@ -196,7 +196,7 @@ if (File.Exists("checked.txt"))
 }
 
 // function to check a single proxy
-async Task CheckHttp(string proxy)
+async Task CheckProxy(string proxy)
 {
     // split the proxy string into an array of strings
     string[] proxyParts = proxy.Split(":");
@@ -233,176 +233,33 @@ async Task CheckHttp(string proxy)
     }
 }
 
-// function to check socks4 proxies
-async Task CheckSocks4(string proxy)
+// ask the user how many threads they want to use
+int threads = int.Parse(GetInput("How many threads do you want to use? (recommended: 1000 - 10000): "));
+// read all the proxies from unchecked.txt into an array of strings
+string[] proxiesToCheck = File.ReadAllLines("unchecked.txt");
+// make the list repeat 3 times
+List<Task> tasks = new List<Task>();
+for (int i = 0; i < 3; i++)
 {
-    // split the proxy string into an array of strings
-    string[] proxyParts = proxy.Split(":");
-    try
+    // loop through all the proxies in the proxies array
+    foreach (string proxy in proxiesToCheck)
     {
-        // create a new HttpClientHandler
-        HttpClientHandler handler = new HttpClientHandler();
-
-        // set the proxy of the HttpClientHandler to the proxy from the proxies array
-        // for WebProxy the following line needs to be added to the top of the file: using System.Net;
-        handler.Proxy = new WebProxy(proxyParts[0], int.Parse(proxyParts[1]));
-
-        // create a new HttpClient with the HttpClientHandler
-        HttpClient client = new HttpClient(handler);
-
-        // set the timeout of the HttpClient to 10 seconds
-        client.Timeout = TimeSpan.FromSeconds(10);
-
-        // try to make a web request to https://api.ipify.org/ to get the ip address of the proxy
-        string response = await client.GetStringAsync("https://api.ipify.org/");
-
-        // write the proxy to checked.txt if the request was successful
-        File.AppendAllText("checked.txt", proxy + "\n");
-
-        // print the proxy and the ip address of the proxy
-        Console.ForegroundColor = ConsoleColor.Green;
-        Console.WriteLine("Valid proxy: " + proxy);
-    }
-    catch
-    {
-        // if the request failed, print an error message
-        Console.ForegroundColor = ConsoleColor.Red;
-        Console.WriteLine("Invalid proxy: " + proxy);
-    }
-}
-
-// function to check socks5 proxies
-async Task CheckSocks5(string proxy)
-{
-    // split the proxy string into an array of strings
-    string[] proxyParts = proxy.Split(":");
-    try
-    {
-        // create a new HttpClientHandler
-        HttpClientHandler handler = new HttpClientHandler();
-
-        // set the proxy of the HttpClientHandler to the proxy from the proxies array
-        // for WebProxy the following line needs to be added to the top of the file: using System.Net;
-        handler.Proxy = new WebProxy(proxyParts[0], int.Parse(proxyParts[1]));
-
-        // create a new HttpClient with the HttpClientHandler
-        HttpClient client = new HttpClient(handler);
-
-        // set the timeout of the HttpClient to 10 seconds
-        client.Timeout = TimeSpan.FromSeconds(10);
-
-        // try to make a web request to https://api.ipify.org/ to get the ip address of the proxy
-        string response = await client.GetStringAsync("https://api.ipify.org/");
-
-        // write the proxy to checked.txt if the request was successful
-        File.AppendAllText("checked.txt", proxy + "\n");
-
-        // print the proxy and the ip address of the proxy
-        Console.ForegroundColor = ConsoleColor.Green;
-        Console.WriteLine("Valid proxy: " + proxy);
-    }
-    catch
-    {
-        // if the request failed, print an error message
-        Console.ForegroundColor = ConsoleColor.Red;
-        Console.WriteLine("Invalid proxy: " + proxy);
-    }
-}
-
-// check if the proxy type is http
-if (proxyType == "http") {
-    // ask the user how many threads they want to use
-    int threads = int.Parse(GetInput("How many threads do you want to use? (recommended: 1000 - 10000): "));
-    // read all the proxies from unchecked.txt into an array of strings
-    string[] proxies = File.ReadAllLines("unchecked.txt");
-    // make the list repeat 3 times
-    for (int i = 0; i < 3; i++)
-    {
-        // create a new list of tasks
-        List<Task> tasks = new List<Task>();
-        // loop through all the proxies in the proxies array
-        foreach (string proxy in proxies)
+        // add a new task to the tasks list that runs the CheckProxy function with the current proxy\
+        tasks.Add(CheckProxy(proxy));
+        // if the amount of tasks in the tasks list is equal to the amount of threads the user wants to use, wait for all the tasks to finish and then clear the tasks list
+        if (tasks.Count == threads)
         {
-            // add a new task to the tasks list that runs the CheckProxy function with the current proxy
-            tasks.Add(CheckHttp(proxy));
-            // if the amount of tasks in the tasks list is equal to the amount of threads the user wants to use, wait for all the tasks to finish and then clear the tasks list
-            if (tasks.Count == threads)
-            {
-                await Task.WhenAll(tasks);
-                tasks.Clear();
-            }
+            await Task.WhenAll(tasks);
+            tasks.Clear();
         }
     }
-
-    // remove all duplicate proxies from checked.txt and write them to checked.txt
-    string[] checkedLines = File.ReadAllLines("checked.txt");
-    string[] uniqueCheckedLines = checkedLines.Distinct().ToArray();
-    File.WriteAllLines("checked.txt", uniqueCheckedLines);
 }
-
-// check if the proxy type is socks4
-else if (proxyType == "socks4")
-{
-    // ask the user how many threads they want to use
-    int threads = int.Parse(GetInput("How many threads do you want to use? (recommended: 1000 - 10000): "));
-    // read all the proxies from unchecked.txt into an array of strings
-    string[] proxies = File.ReadAllLines("unchecked.txt");
-    // make the list repeat 3 times
-    for (int i = 0; i < 3; i++)
-    {
-        // create a new list of tasks
-        List<Task> tasks = new List<Task>();
-        // loop through all the proxies in the proxies array
-        foreach (string proxy in proxies)
-        {
-            // add a new task to the tasks list that runs the CheckProxy function with the current proxy
-            tasks.Add(CheckSocks4(proxy));
-            // if the amount of tasks in the tasks list is equal to the amount of threads the user wants to use, wait for all the tasks to finish and then clear the tasks list
-            if (tasks.Count == threads)
-            {
-                await Task.WhenAll(tasks);
-                tasks.Clear();
-            }
-        }
-    }
-
-    // remove all duplicate proxies from checked.txt and write them to checked.txt
-    string[] checkedLines = File.ReadAllLines("checked.txt");
-    string[] uniqueCheckedLines = checkedLines.Distinct().ToArray();
-    File.WriteAllLines("checked.txt", uniqueCheckedLines);
-}
-
-// check if the proxy type is socks5
-else if (proxyType == "socks5")
-{
-    // ask the user how many threads they want to use
-    int threads = int.Parse(GetInput("How many threads do you want to use? (recommended: 1000 - 10000): "));
-    // read all the proxies from unchecked.txt into an array of strings
-    string[] proxies = File.ReadAllLines("unchecked.txt");
-    // make the list repeat 3 times
-    for (int i = 0; i < 3; i++)
-    {
-        // create a new list of tasks
-        List<Task> tasks = new List<Task>();
-        // loop through all the proxies in the proxies array
-        foreach (string proxy in proxies)
-        {
-            // add a new task to the tasks list that runs the CheckProxy function with the current proxy
-            tasks.Add(CheckSocks5(proxy));
-            // if the amount of tasks in the tasks list is equal to the amount of threads the user wants to use, wait for all the tasks to finish and then clear the tasks list
-            if (tasks.Count == threads)
-            {
-                await Task.WhenAll(tasks);
-                tasks.Clear();
-            }
-        }
-    }
-
-    // remove all duplicate proxies from checked.txt and write them to checked.txt
-    string[] checkedLines = File.ReadAllLines("checked.txt");
-    string[] uniqueCheckedLines = checkedLines.Distinct().ToArray();
-    File.WriteAllLines("checked.txt", uniqueCheckedLines);
-}
+await Task.WhenAll(tasks);
+tasks.Clear();
+// remove all duplicate proxies from checked.txt and write them to checked.txt
+string[] checkedLines = File.ReadAllLines("checked.txt");
+string[] uniqueCheckedLines = checkedLines.Distinct().ToArray();
+File.WriteAllLines("checked.txt", uniqueCheckedLines);
 
 // wait for the user to press a key before closing the program
 Console.ResetColor();
