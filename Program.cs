@@ -120,9 +120,16 @@ void Exit()
     Environment.Exit(0);
 }
 
+// function to clear the console
+void Clear()
+{
+    Console.Clear();
+}
+
 // ask the user what type of proxy they want to scrape
 async Task main()
 {
+    Clear();
     DrawLogo();
     string action = GetInput("Do you want to scrape proxies or check proxies? (scrape, check): ");
 
@@ -143,6 +150,7 @@ async Task main()
 async Task Scrape()
 {
     // ask the user what type of proxy they want to scrape
+    Clear();
     DrawLogo();
     string proxyType = GetInput("What type of proxy do you want to scrape? (http, socks4, socks5): ");
 
@@ -188,6 +196,7 @@ async Task Scrape()
 
 async Task Check()
 {
+    Clear();
     DrawLogo();
     // check if the user wishes to check the proxies
     string checkProxies = GetInput("Do you want to check the proxies? (y/n): ");
