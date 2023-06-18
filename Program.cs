@@ -76,9 +76,9 @@ string[] logo = {
     @"                       __/ |                       | |                                                             ",
     @"                      |___/                        |_|                                                             ",
     @"  ___           _  _          ",
-    @" | _ )_  _     | \| |_  ___ __",
-    @" | _ \ || |    | .` | || \ \ /",
-    @" |___/\_, |    |_|\_|\_, /_\_\",
+    @" | _ )_  _     | \| |_  ___ __    Donations much appreciated!",
+    @" | _ \ || |    | .` | || \ \ /    ETH: 0x65ced7F343115Eca8Ea6C027d4613d4Cac756288",
+    @" |___/\_, |    |_|\_|\_, /_\_\    Monero: 47Hg2xqF4mXJUsPppzsbwn5nXtg5V1VsPaSTuTNv4CKbAEGGMbnRDWDjWhvhP62brcapnPvaVfYRGA1TjPmjvk7e4CG7LKC",
     @"      |__/           |__/     "
 };
 
