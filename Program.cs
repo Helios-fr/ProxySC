@@ -89,21 +89,14 @@ async Task<string> GetResponse(string url)
 // ask the user what type of proxy they want to scrape
 string proxyType = GetInput("What type of proxy do you want to scrape? (http, socks4, socks5): ");
 
-    // loop through all the urls in the httpUrls array 3 times
 
 string[] urls = { };
-if (proxyType == "http")
-{
-    urls = httpUrls;
-}
-else if (proxyType == "socks4")
-{
-    urls = socks4Urls;
-}
-else if (proxyType == "socks5")
-{
-    urls = socks5Urls;
-}
+if (proxyType == "http") {  urls = httpUrls; }
+else if (proxyType == "socks4") { urls = socks4Urls; }
+else if (proxyType == "socks5") { urls = socks5Urls; }
+else { Console.WriteLine("Invalid proxy type"); }
+
+
 foreach (string url in urls)
 {
     // make a web request to the url and store the response in a string
@@ -126,7 +119,7 @@ foreach (string url in urls)
     }
 }
 
-// remove all duplicate proxies from unchecked.txt and write them to checked.txt
+// remove all duplicate proxies from unchecked.txt and write them back to the file
 string[] lines = File.ReadAllLines("unchecked.txt");
 string[] uniqueLines = lines.Distinct().ToArray();
 File.WriteAllLines("unchecked.txt", uniqueLines);
@@ -140,23 +133,18 @@ if (checkProxies != "y")
     Environment.Exit(0);
 }
 
-if (File.Exists("checked.txt"))
-{
-    File.Delete("checked.txt");
-}
+if (File.Exists("checked.txt")) { File.Delete("checked.txt"); }
 
 // function to check a single proxy
 async Task CheckProxy(string proxy)
 {
-    // split the proxy string into an array of strings
     string[] proxyParts = proxy.Split(":");
     try
     {
         // create a new HttpClientHandler
         HttpClientHandler handler = new HttpClientHandler();
 
-        // set the proxy of the HttpClientHandler to the proxy from the proxies array
-        // for WebProxy the following line needs to be added to the top of the file: using System.Net;
+        // set the proxy of the HttpClientHandler to the proxy that was passed to the function
         handler.Proxy = new WebProxy(proxyParts[0], int.Parse(proxyParts[1]));
 
         // create a new HttpClient with the HttpClientHandler
@@ -185,23 +173,32 @@ async Task CheckProxy(string proxy)
 
 // ask the user how many threads they want to use
 int threads = int.Parse(GetInput("How many threads do you want to use? (recommended: 1000 - 10000): "));
+
+// ask the user how many file reccuisons they want to use
+int recursions = int.Parse(GetInput("How many file recursions do you want to use? (recommended: 3 - 10): "));
+
 // read all the proxies from unchecked.txt into an array of strings
-string[] proxiesToCheck = File.ReadAllLines("unchecked.txt");
-// make the list repeat 3 times
-List<Task> tasks = new List<Task>();
-for (int i = 0; i < 3; i++)
+string[] uncheckedfile = File.ReadAllLines("unchecked.txt");
+
+// add the list to itself recursions amount of times
+string[] proxiesToCheck = uncheckedfile;
+for (int i = 0; i < recursions; i++)
 {
-    // loop through all the proxies in the proxies array
-    foreach (string proxy in proxiesToCheck)
+    proxiesToCheck = proxiesToCheck.Concat(uncheckedfile).ToArray();
+}
+
+
+List<Task> tasks = new List<Task>();
+// loop through all the proxies in the proxies array
+foreach (string proxy in proxiesToCheck)
+{
+    // add a new task to the tasks list that runs the CheckProxy function with the current proxy\
+    tasks.Add(CheckProxy(proxy));
+    // if the amount of tasks in the tasks list is equal to the amount of threads the user wants to use, wait for all the tasks to finish and then clear the tasks list
+    if (tasks.Count == threads)
     {
-        // add a new task to the tasks list that runs the CheckProxy function with the current proxy\
-        tasks.Add(CheckProxy(proxy));
-        // if the amount of tasks in the tasks list is equal to the amount of threads the user wants to use, wait for all the tasks to finish and then clear the tasks list
-        if (tasks.Count == threads)
-        {
-            await Task.WhenAll(tasks);
-            tasks.Clear();
-        }
+        await Task.WhenAll(tasks);
+        tasks.Clear();
     }
 }
 await Task.WhenAll(tasks);
