@@ -22,6 +22,6 @@ If you encounter any bugs, issues, or have feature requests, please create a new
 
 ## Licensing
 
-By contributing to this project, you agree that your contributions will be licensed under the [LICENSE](./LICENSE) file of the project.
+By contributing to this project, you agree that your contributions will be licensed under the [LICENSE](../LICENSE) file of the project.
 
 Thank you for your interest in contributing to GPT Engineer! We appreciate your support and look forward to your contributions.
