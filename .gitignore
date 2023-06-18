@@ -1,0 +1,54 @@
+# Compiled object files
+*.sln.docstates
+*.suo
+*.user
+*.userosscache
+*.usertasks
+
+# Compiled binary files
+bin/
+obj/
+Debug/
+Release/
+
+# Visual Studio files
+.vs/
+.vscode/
+*.sln
+*.csproj.user
+*.csproj.nuget.g.props
+*.csproj.nuget.g.targets
+*_Resharper*
+
+# Build results
+[Dd]ebug/
+[Rr]elease/
+x64/
+build/
+[Tt]est[Rr]esult/
+[Bb]uild[Ll]og.*
+
+# NuGet Packages
+*.nupkg
+nuget/
+*.code-workspace
+
+# Windows-based folders
+$Recycle.Bin/
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# macOS folders
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Linux-based folders
+*~
+
+# Rider specific files
+.idea/
+*.sln.iml
+*.ipr
+*.iws
