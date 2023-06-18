@@ -271,6 +271,44 @@ async Task CheckSocks4(string proxy)
     }
 }
 
+// function to check socks5 proxies
+async Task CheckSocks5(string proxy)
+{
+    // split the proxy string into an array of strings
+    string[] proxyParts = proxy.Split(":");
+    try
+    {
+        // create a new HttpClientHandler
+        HttpClientHandler handler = new HttpClientHandler();
+
+        // set the proxy of the HttpClientHandler to the proxy from the proxies array
+        // for WebProxy the following line needs to be added to the top of the file: using System.Net;
+        handler.Proxy = new WebProxy(proxyParts[0], int.Parse(proxyParts[1]));
+
+        // create a new HttpClient with the HttpClientHandler
+        HttpClient client = new HttpClient(handler);
+
+        // set the timeout of the HttpClient to 10 seconds
+        client.Timeout = TimeSpan.FromSeconds(10);
+
+        // try to make a web request to https://api.ipify.org/ to get the ip address of the proxy
+        string response = await client.GetStringAsync("https://api.ipify.org/");
+
+        // write the proxy to checked.txt if the request was successful
+        File.AppendAllText("checked.txt", proxy + "\n");
+
+        // print the proxy and the ip address of the proxy
+        Console.ForegroundColor = ConsoleColor.Green;
+        Console.WriteLine("Valid proxy: " + proxy);
+    }
+    catch
+    {
+        // if the request failed, print an error message
+        Console.ForegroundColor = ConsoleColor.Red;
+        Console.WriteLine("Invalid proxy: " + proxy);
+    }
+}
+
 // check if the proxy type is http
 if (proxyType == "http") {
     // ask the user how many threads they want to use
