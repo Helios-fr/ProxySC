@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\lawth\\OneDrive\\Documents\\GitHub\\notnet-testing\\proxyscraper.csproj": {}
+    "C:\\Users\\lawth\\OneDrive\\Documents\\GitHub\\notnet-testing\\src\\proxyscraper.csproj": {}
   },
   "projects": {
-    "C:\\Users\\lawth\\OneDrive\\Documents\\GitHub\\notnet-testing\\proxyscraper.csproj": {
+    "C:\\Users\\lawth\\OneDrive\\Documents\\GitHub\\notnet-testing\\src\\proxyscraper.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\lawth\\OneDrive\\Documents\\GitHub\\notnet-testing\\proxyscraper.csproj",
+        "projectUniqueName": "C:\\Users\\lawth\\OneDrive\\Documents\\GitHub\\notnet-testing\\src\\proxyscraper.csproj",
         "projectName": "proxyscraper",
-        "projectPath": "C:\\Users\\lawth\\OneDrive\\Documents\\GitHub\\notnet-testing\\proxyscraper.csproj",
+        "projectPath": "C:\\Users\\lawth\\OneDrive\\Documents\\GitHub\\notnet-testing\\src\\proxyscraper.csproj",
         "packagesPath": "C:\\Users\\lawth\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\lawth\\OneDrive\\Documents\\GitHub\\notnet-testing\\obj\\",
+        "outputPath": "C:\\Users\\lawth\\OneDrive\\Documents\\GitHub\\notnet-testing\\src\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\lawth\\AppData\\Roaming\\NuGet\\NuGet.Config"
