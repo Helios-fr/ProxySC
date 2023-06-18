@@ -8,65 +8,16 @@ using System.Linq;
 using System.Collections.Generic;
 
 // list of http proxy urls
-string[] httpUrls = {
-    "https://raw.githubusercontent.com/monosans/proxy-list/main/proxies/http.txt",
-    "https://api.proxyscrape.com/v2/?request=getproxies&protocol=http&timeout=10000&country=all&ssl=all&anonymity=all",
-    "https://raw.githubusercontent.com/proxy4parsing/proxy-list/main/http.txt",
-    "https://www.proxy-list.download/api/v1/get?type=https",
-    "https://api.openproxylist.xyz/http.txt",
-    "https://raw.githubusercontent.com/monosans/proxy-list/main/proxies_anonymous/http.txt",
-    "https://raw.githubusercontent.com/ShiftyTR/Proxy-List/master/https.txt",
-    "https://raw.githubusercontent.com/HyperBeats/proxy-list/main/http.txt",
-    "https://raw.githubusercontent.com/roosterkid/openproxylist/main/HTTPS_RAW.txt",
-    "https://raw.githubusercontent.com/ShiftyTR/Proxy-List/master/http.txt",
-    "https://raw.githubusercontent.com/jetkai/proxy-list/main/online-proxies/txt/proxies-https.txt",
-    "https://www.proxyscan.io/download?type=http",
-    "https://raw.githubusercontent.com/TheSpeedX/PROXY-List/master/http.txt",
-    "https://www.proxy-list.download/api/v1/get?type=http",
-    "https://raw.githubusercontent.com/jetkai/proxy-list/main/online-proxies/txt/proxies-http.txt",
-    "http://pubproxy.com/api/proxy",
-    "https://raw.githubusercontent.com/mmpx12/proxy-list/master/https.txt",
-    "https://raw.githubusercontent.com/mmpx12/proxy-list/master/http.txt",
-    "https://www.proxyscan.io/download?type=https"
-};
+string httpRaw = await GetResponse("https://raw.githubusercontent.com/Necrownyx/Proxy-Scraper-and-Checker/main/http.sites");
+string[] httpUrls = httpRaw.Split("\n");
 
 // list of socks4 proxy urls
-string[] socks4Urls = {
-    "https://api.openproxylist.xyz/socks4.txt",
-    "https://www.proxy-list.download/api/v1/get?type=socks4",
-    "https://raw.githubusercontent.com/jetkai/proxy-list/main/online-proxies/txt/proxies-socks4.txt",
-    "https://raw.githubusercontent.com/ShiftyTR/Proxy-List/master/socks4.txt",
-    "https://raw.githubusercontent.com/saschazesiger/Free-Proxies/master/proxies/socks4.txt",
-    "https://raw.githubusercontent.com/TheSpeedX/PROXY-List/master/socks4.txt",
-    "https://raw.githubusercontent.com/HyperBeats/proxy-list/main/socks4.txt",
-    "https://www.proxyscan.io/download?type=socks4",
-    "https://www.socks-proxy.net/",
-    "https://raw.githubusercontent.com/mmpx12/proxy-list/master/socks4.txt",
-    "https://raw.githubusercontent.com/monosans/proxy-list/main/proxies/socks4.txt",
-    "https://openproxy.space/list/socks4",
-    "https://raw.githubusercontent.com/monosans/proxy-list/main/proxies_anonymous/socks4.txt",
-    "https://raw.githubusercontent.com/roosterkid/openproxylist/main/SOCKS4_RAW.txt",
-    "https://api.proxyscrape.com/v2/?request=getproxies&protocol=socks4&timeout=10000&country=all"
-};
+string socks4Raw = await GetResponse("https://raw.githubusercontent.com/Necrownyx/Proxy-Scraper-and-Checker/main/socks4.sites");
+string[] socks4Urls = socks4Raw.Split("\n");
 
 // list of socks5 proxy urls
-string[] socks5Urls = {
-    "https://raw.githubusercontent.com/thespeedx/proxy-list/master/socks5.txt",
-    "https://api.openproxylist.xyz/socks5.txt",
-    "https://www.proxyscan.io/download?type=socks5",
-    "https://raw.githubusercontent.com/roosterkid/openproxylist/main/SOCKS5_RAW.txt",
-    "https://raw.githubusercontent.com/hookzof/socks5_list/master/proxy.txt",
-    "https://www.proxy-list.download/api/v1/get?type=socks5",
-    "https://raw.githubusercontent.com/monosans/proxy-list/main/proxies/socks5.txt",
-    "https://raw.githubusercontent.com/saschazesiger/Free-Proxies/master/proxies/socks5.txt",
-    "https://raw.githubusercontent.com/hyperbeats/proxy-list/main/socks5.txt",
-    "https://openproxy.space/list/socks5",
-    "https://raw.githubusercontent.com/mmpx12/proxy-list/master/socks5.txt",
-    "https://api.proxyscrape.com/v2/?request=getproxies&protocol=socks5&timeout=10000&country=all",
-    "https://raw.githubusercontent.com/jetkai/proxy-list/main/online-proxies/txt/proxies-socks5.txt",
-    "https://raw.githubusercontent.com/monosans/proxy-list/main/proxies_anonymous/socks5.txt",
-    "https://raw.githubusercontent.com/shiftytr/proxy-list/master/socks5.txt"
-};
+string socks5Raw= await GetResponse("https://raw.githubusercontent.com/Necrownyx/Proxy-Scraper-and-Checker/main/socks5.sites");
+string[] socks5Urls = socks5Raw.Split("\n");
 
 string[] logo = {
     @"  _____                        _____                                           _____ _               _             ",
