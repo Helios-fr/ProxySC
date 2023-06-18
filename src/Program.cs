@@ -4,6 +4,8 @@ using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
 using System.Threading;
+using System.Linq;
+using System.Collections.Generic;
 
 // list of http proxy urls
 string[] httpUrls = {
