@@ -86,6 +86,15 @@ async Task<string> GetResponse(string url)
     return responseBody;
 }
 
+// funstion to perfom the exit sequence
+void Exit()
+{
+    Console.ForegroundColor = ConsoleColor.Red;
+    Console.WriteLine("Press any key to exit...");
+    Console.ReadKey();
+    Environment.Exit(0);
+}
+
 // ask the user what type of proxy they want to scrape
 string proxyType = GetInput("What type of proxy do you want to scrape? (http, socks4, socks5): ");
 
@@ -130,7 +139,7 @@ string checkProxies = GetInput("Do you want to check the proxies? (y/n): ");
 
 if (checkProxies != "y")
 {
-    Environment.Exit(0);
+    Exit();
 }
 
 if (File.Exists("checked.txt")) { File.Delete("checked.txt"); }
@@ -208,7 +217,7 @@ string[] checkedLines = File.ReadAllLines("checked.txt");
 string[] uniqueCheckedLines = checkedLines.Distinct().ToArray();
 File.WriteAllLines("checked.txt", uniqueCheckedLines);
 
-// wait for the user to press a key before closing the program
-Console.ResetColor();
-Console.WriteLine("Press any key to exit...");
-Console.ReadKey();
+// print the number of valid proxies in checked.txt in green
+Console.ForegroundColor = ConsoleColor.Green;
+Console.WriteLine("Found " + uniqueCheckedLines.Length + " valid proxies");
+Exit();
