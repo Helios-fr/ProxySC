@@ -145,19 +145,19 @@ async Task Scrape()
     // print the number of unique proxies scraped in green
     Console.ForegroundColor = ConsoleColor.Green;
     Console.WriteLine("Scraped " + uniqueLines.Length + " unique proxies");
+    // ask user if they want to check the proxies
+    string checkProxies = GetInput("Do you want to check the proxies? (y/n): ");
+
+    if (checkProxies == "y")
+    {
+        await Check();
+    }
 }
 
 async Task Check()
 {
     Clear();
     DrawLogo();
-    // check if the user wishes to check the proxies
-    string checkProxies = GetInput("Do you want to check the proxies? (y/n): ");
-
-    if (checkProxies != "y")
-    {
-        Exit();
-    }
 
     if (File.Exists("checked.txt")) { File.Delete("checked.txt"); }
 
