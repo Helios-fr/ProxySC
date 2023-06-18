@@ -174,7 +174,6 @@ else if (proxyType == "socks5")
 else
 {
     Console.WriteLine("Invalid proxy type!");
-    proxyType = "http";
 }
 
 // remove all duplicate proxies from unchecked.txt and write them to checked.txt
