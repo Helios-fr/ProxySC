@@ -89,91 +89,41 @@ async Task<string> GetResponse(string url)
 // ask the user what type of proxy they want to scrape
 string proxyType = GetInput("What type of proxy do you want to scrape? (http, socks4, socks5): ");
 
-// check if the user wants to scrape http proxies
+    // loop through all the urls in the httpUrls array 3 times
+
+string[] urls = { };
 if (proxyType == "http")
 {
-    // loop through all the urls in the httpUrls array 3 times
-    foreach (string url in httpUrls)
-    {
-        // make a web request to the url and store the response in a string
-        string response = await GetResponse(url);
-
-        // split the response string into an array of strings
-        string[] proxies = response.Split("\n");
-
-        // print the number of proxies scraped from the url in green
-        Console.ForegroundColor = ConsoleColor.Green;
-        Console.WriteLine("Scraped " + proxies.Length + " proxies from " + url);
-
-        // loop through all the proxies in the proxies array and write them to unchecked.txt if they start with a number
-        foreach (string proxy in proxies)
-        {
-            if (proxy.StartsWith("1") || proxy.StartsWith("2") || proxy.StartsWith("3") || proxy.StartsWith("4") || proxy.StartsWith("5") || proxy.StartsWith("6") || proxy.StartsWith("7") || proxy.StartsWith("8") || proxy.StartsWith("9") || proxy.StartsWith("0"))
-            {
-                File.AppendAllText("unchecked.txt", proxy + "\n");
-            }
-        }
-    }
+    urls = httpUrls;
 }
-
-// check if the user wants to scrape socks4 proxies
 else if (proxyType == "socks4")
 {
-    // loop through all the urls in the socks4Urls array 3 times
-    foreach (string url in socks4Urls)
-    {
-        // make a web request to the url and store the response in a string
-        string response = await GetResponse(url);
-
-        // split the response string into an array of strings
-        string[] proxies = response.Split("\n");
-
-        // print the number of proxies scraped from the url in green
-        Console.ForegroundColor = ConsoleColor.Green;
-        Console.WriteLine("Scraped " + proxies.Length + " proxies from " + url);
-
-        // loop through all the proxies in the proxies array and write them to unchecked.txt if they start with a number
-        foreach (string proxy in proxies)
-        {
-            if (proxy.StartsWith("1") || proxy.StartsWith("2") || proxy.StartsWith("3") || proxy.StartsWith("4") || proxy.StartsWith("5") || proxy.StartsWith("6") || proxy.StartsWith("7") || proxy.StartsWith("8") || proxy.StartsWith("9") || proxy.StartsWith("0"))
-            {
-                File.AppendAllText("unchecked.txt", proxy + "\n");
-            }
-        }
-    }
+    urls = socks4Urls;
 }
-
-// check if the user wants to scrape socks5 proxies
 else if (proxyType == "socks5")
 {
-    // loop through all the urls in the socks5Urls array 3 times
-    foreach (string url in socks5Urls)
+    urls = socks5Urls;
+}
+foreach (string url in urls)
+{
+    // make a web request to the url and store the response in a string
+    string response = await GetResponse(url);
+
+    // split the response string into an array of strings
+    string[] proxies = response.Split("\n");
+
+    // print the number of proxies scraped from the url in green
+    Console.ForegroundColor = ConsoleColor.Green;
+    Console.WriteLine("Scraped " + proxies.Length + " proxies from " + url);
+
+    // loop through all the proxies in the proxies array and write them to unchecked.txt if they start with a number
+    foreach (string proxy in proxies)
     {
-        // make a web request to the url and store the response in a string
-        string response = await GetResponse(url);
-
-        // split the response string into an array of strings
-        string[] proxies = response.Split("\n");
-
-        // print the number of proxies scraped from the url in green
-        Console.ForegroundColor = ConsoleColor.Green;
-        Console.WriteLine("Scraped " + proxies.Length + " proxies from " + url);
-
-        // loop through all the proxies in the proxies array and write them to unchecked.txt if they start with a number
-        foreach (string proxy in proxies)
+        if (proxy.StartsWith("1") || proxy.StartsWith("2") || proxy.StartsWith("3") || proxy.StartsWith("4") || proxy.StartsWith("5") || proxy.StartsWith("6") || proxy.StartsWith("7") || proxy.StartsWith("8") || proxy.StartsWith("9") || proxy.StartsWith("0"))
         {
-            if (proxy.StartsWith("1") || proxy.StartsWith("2") || proxy.StartsWith("3") || proxy.StartsWith("4") || proxy.StartsWith("5") || proxy.StartsWith("6") || proxy.StartsWith("7") || proxy.StartsWith("8") || proxy.StartsWith("9") || proxy.StartsWith("0"))
-            {
-                File.AppendAllText("unchecked.txt", proxy + "\n");
-            }
+            File.AppendAllText("unchecked.txt", proxy + "\n");
         }
     }
-}
-
-// if the user didn't enter a valid proxy type, print an error message
-else
-{
-    Console.WriteLine("Invalid proxy type!");
 }
 
 // remove all duplicate proxies from unchecked.txt and write them to checked.txt
