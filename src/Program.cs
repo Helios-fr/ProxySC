@@ -146,6 +146,7 @@ async Task Scrape()
     Console.ForegroundColor = ConsoleColor.Green;
     Console.WriteLine("Scraped " + uniqueLines.Length + " unique proxies");
     // ask user if they want to check the proxies
+    Console.ResetColor();
     string checkProxies = GetInput("Do you want to check the proxies? (y/n): ");
 
     if (checkProxies == "y")
