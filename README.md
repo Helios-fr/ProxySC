@@ -1,13 +1,13 @@
+
 ```hack
-  _____                      _____  _____ 
- |  __ \  By Nyx            / ____|/ ____|
- | |__) | __ _____  ___   _| (___ | |     
- |  ___/ '__/ _ \ \/ / | | |\___ \| |     
- | |   | | | (_) >  <| |_| |____) | |____ 
- |_|   |_|  \___/_/\_\\__, |_____/ \_____|
-                       __/ |              
-      pastebin.com/   |___/   sJAzRdyK    
-   
+              _____                      _____  _____ 
+             |  __ \  By Nyx            / ____|/ ____|
+             | |__) | __ _____  ___   _| (___ | |     
+             |  ___/ '__/ _ \ \/ / | | |\___ \| |     
+             | |   | | | (_) >  <| |_| |____) | |____ 
+             |_|   |_|  \___/_/\_\\__, |_____/ \_____|
+                                   __/ |              
+                  pastebin.com/   |___/   sJAzRdyK    
 ```
 ## Still in active development, star to recive notifications about new releases
 This proxy scraper uses lists of web servers in order to retrive recent and up to date lists of proxies with the option to also check them to find the valid proxies. It is still in development so any suggestions or feature requests would be apreciated in the [Issues Section](https://github.com/Necrownyx/Proxy-Scraper-and-Checker/issues). An installation guide can be found below along with a feature list.
