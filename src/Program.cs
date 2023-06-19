@@ -346,7 +346,10 @@ async Task Find()
         List<List<string>> filteredLines = new List<List<string>>();
         foreach (List<string> line in finalLines)
         {
-            if (line[1].Contains("http") || line[1].Contains("socks") || line[1].Contains("prox"))
+            // convert line 1 to lowercase
+            string line1 = line[1].ToLower();
+            // if line1 contains http, socks or prox, add it to filteredLines
+            if (line1.Contains("http") || line1.Contains("socks") || line1.Contains("prox"))
             {
                 filteredLines.Add(line);
             }
@@ -358,12 +361,18 @@ async Task Find()
             Console.WriteLine(line[0] + "|" + line[1]);
         }
 
+        // save just the urls to sites.txt
+        foreach (List<string> line in filteredLines)
+        {
+            File.AppendAllText("sites.txt", line[0] + "\n");
+        }
+
+
 
 
     }
     Console.ReadLine();
 }
-
 
 while (true)
 {
