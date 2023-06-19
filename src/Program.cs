@@ -119,6 +119,10 @@ async Task main()
     {
         await Upload();
     }
+    else if (action == "find")
+    {
+        await Find();
+    }
     else
     {
         Console.WriteLine("Invalid action");
@@ -273,6 +277,109 @@ async Task Check()
         await Upload();
     }
 }
+
+async Task Find()
+{
+
+    // for every line in data.txt split it at the "|" and put it in a list of lists
+    List<List<string>> information = new List<List<string>>();
+    using (StreamReader file = new StreamReader("data.txt"))
+    {
+        string line;
+        while ((line = file.ReadLine()) != null)
+        {
+            List<string> siteInstructions = new List<string>(line.Split("|").Select(item => item.Trim()));
+            information.Add(siteInstructions);
+        }
+    }
+
+    Console.WriteLine(string.Join(Environment.NewLine, information.Select(line => string.Join(" | ", line))));
+
+    foreach (List<string> data in information)
+    {
+        string site = GetSiteContent(data[0]);
+        List<string> siteLines = site.Split('\n').ToList();
+
+        siteLines = FilterLines(data[1], siteLines);
+        siteLines = RemoveFromLines(data[2], siteLines);
+        siteLines = RemoveFromLines(data[3], siteLines);
+        List<List<string>> siteData = SplitLines(data[4], siteLines);
+        siteData = FilterList(siteData);
+
+        foreach (List<string> item in siteData)
+        {
+            Console.WriteLine(string.Join(Environment.NewLine, item));
+            // get the site content of data[5] + item[0]
+            string itemSite = GetSiteContent(data[5] + item[0]);
+            // append the lines of the content to unchecked.txt but only if they start with a number
+            for (int i = 0; i < itemSite.Split('\n').Length; i++)
+            {
+                if (itemSite.Split('\n')[i].StartsWith("1") || itemSite.Split('\n')[i].StartsWith("2") || itemSite.Split('\n')[i].StartsWith("3") || itemSite.Split('\n')[i].StartsWith("4") || itemSite.Split('\n')[i].StartsWith("5") || itemSite.Split('\n')[i].StartsWith("6") || itemSite.Split('\n')[i].StartsWith("7") || itemSite.Split('\n')[i].StartsWith("8") || itemSite.Split('\n')[i].StartsWith("9") || itemSite.Split('\n')[i].StartsWith("0"))
+                {
+                    File.AppendAllText("unchecked.txt", itemSite.Split('\n')[i] + "\n");
+                }
+            }
+
+        }
+    }
+    Console.ReadLine();
+}
+
+static string GetSiteContent(string site)
+{
+    using (WebClient client = new WebClient())
+    {
+        return client.DownloadString(site);
+    }
+}
+
+static List<string> FilterLines(string startsWith, List<string> lines)
+{
+    List<string> output = new List<string>();
+    foreach (string line in lines)
+    {
+        if (line.StartsWith(startsWith))
+        {
+            output.Add(line);
+        }
+    }
+    return output;
+}
+
+static List<string> RemoveFromLines(string remove, List<string> lines)
+{
+    List<string> output = new List<string>();
+    foreach (string line in lines)
+    {
+        output.Add(line.Replace(remove, ""));
+    }
+    return output;
+}
+
+static List<List<string>> SplitLines(string split, List<string> lines)
+{
+    List<List<string>> output = new List<List<string>>();
+    foreach (string key in lines)
+    {
+        output.Add(key.Split(new string[] { split }, StringSplitOptions.None).ToList());
+    }
+    return output;
+}
+
+static List<List<string>> FilterList(List<List<string>> list)
+{
+    List<List<string>> output = new List<List<string>>();
+    foreach (List<string> item in list)
+    {
+        // if the phrases "http", "socks", "prox" are not in the item[1].ToLower() then append it to the output list
+        if (item[1].ToLower().Contains("http") || item[1].ToLower().Contains("socks") || item[1].ToLower().Contains("prox"))
+        {
+            output.Add(item);
+        }
+    }
+    return output;
+}
+
 
 while (true)
 {
