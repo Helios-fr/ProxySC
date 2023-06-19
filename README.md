@@ -31,6 +31,12 @@ Refer to the below sections for the features.
 - Custom thread count while checking to speed up the process
 - Custom menu screen and logo
 
+## Demo Videos
+###### *videos may not represent current verion
+### ![Scraping Video](https://raw.githubusercontent.com/Necrownyx/Proxy-Scraper-and-Checker/main/demo/scrape-demo.mp4)
+### ![Checking Video](https://raw.githubusercontent.com/Necrownyx/Proxy-Scraper-and-Checker/main/demo/check-demo.mp4)
+### ![Uploading Video](https://raw.githubusercontent.com/Necrownyx/Proxy-Scraper-and-Checker/main/demo/upload-demo.mp4)
+<br><br><br>
 ## Donation
 Any donation is apreciated, donations can be provided using the below cryptocurrencies.
 - **ETH: 0x65ced7F343115Eca8Ea6C027d4613d4Cac756288**
