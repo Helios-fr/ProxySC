@@ -281,103 +281,87 @@ async Task Check()
 async Task Find()
 {
 
-    // for every line in data.txt split it at the "|" and put it in a list of lists
+    string[] data = File.ReadAllLines("data.txt");
+    // split every line in data by the | character and add it to the information list
     List<List<string>> information = new List<List<string>>();
-    using (StreamReader file = new StreamReader("data.txt"))
+    foreach (string line in data)
     {
-        string line;
-        while ((line = file.ReadLine()) != null)
-        {
-            List<string> siteInstructions = new List<string>(line.Split("|").Select(item => item.Trim()));
-            information.Add(siteInstructions);
-        }
+        information.Add(line.Split('|').ToList());
+        Console.WriteLine(line);
     }
 
-    Console.WriteLine(string.Join(Environment.NewLine, information.Select(line => string.Join(" | ", line))));
-
-    foreach (List<string> data in information)
+    foreach (List<string> info in information)
     {
-        string site = GetSiteContent(data[0]);
-        List<string> siteLines = site.Split('\n').ToList();
+        string site = info[0];
+        string startsWith = info[1];
+        string removeStart = info[2];
+        string removeEnd = info[3];
+        string split = info[4];
+        string raw_view_url = info[5];
 
-        siteLines = FilterLines(data[1], siteLines);
-        siteLines = RemoveFromLines(data[2], siteLines);
-        siteLines = RemoveFromLines(data[3], siteLines);
-        List<List<string>> siteData = SplitLines(data[4], siteLines);
-        siteData = FilterList(siteData);
+        // get the content of the site
+        string content = await GetResponse(site);
 
-        foreach (List<string> item in siteData)
+        // sort the content by the startsWith string
+        string[] lines = content.Split("\n");
+        List<string> sortedLines = new List<string>();
+        foreach (string line in lines)
         {
-            Console.WriteLine(string.Join(Environment.NewLine, item));
-            // get the site content of data[5] + item[0]
-            string itemSite = GetSiteContent(data[5] + item[0]);
-            // append the lines of the content to unchecked.txt but only if they start with a number
-            for (int i = 0; i < itemSite.Split('\n').Length; i++)
+            if (line.StartsWith(startsWith))
             {
-                if (itemSite.Split('\n')[i].StartsWith("1") || itemSite.Split('\n')[i].StartsWith("2") || itemSite.Split('\n')[i].StartsWith("3") || itemSite.Split('\n')[i].StartsWith("4") || itemSite.Split('\n')[i].StartsWith("5") || itemSite.Split('\n')[i].StartsWith("6") || itemSite.Split('\n')[i].StartsWith("7") || itemSite.Split('\n')[i].StartsWith("8") || itemSite.Split('\n')[i].StartsWith("9") || itemSite.Split('\n')[i].StartsWith("0"))
-                {
-                    File.AppendAllText("unchecked.txt", itemSite.Split('\n')[i] + "\n");
-                }
+                sortedLines.Add(line);
             }
-
         }
+
+        // remove the removeStart string from every line in sortedLines
+        List<string> removedStart = new List<string>();
+        foreach (string line in sortedLines)
+        {
+            removedStart.Add(line.Replace(removeStart, ""));
+        }
+
+        // remove the removeEnd string from every line in removedStart
+        List<string> removedEnd = new List<string>();
+        foreach (string line in removedStart)
+        {
+            removedEnd.Add(line.Replace(removeEnd, ""));
+        }
+
+        // split every line in removedEnd by the split string and add it to the splitLines list
+        List<List<string>> splitLines = new List<List<string>>();
+        foreach (string line in removedEnd)
+        {
+            splitLines.Add(line.Split(split).ToList());
+        }
+
+        // loop through every line in splitLines and add the raw_view_url to the start of the current 0 index
+        List<List<string>> finalLines = new List<List<string>>();
+        foreach (List<string> line in splitLines)
+        {
+            line[0] = raw_view_url + line[0];
+            finalLines.Add(line);
+        }
+
+        // filter out any lines that dont contain the phrases http, socks, prox in the 1 index
+        List<List<string>> filteredLines = new List<List<string>>();
+        foreach (List<string> line in finalLines)
+        {
+            if (line[1].Contains("http") || line[1].Contains("socks") || line[1].Contains("prox"))
+            {
+                filteredLines.Add(line);
+            }
+        }
+
+        // console leg the filtered lines
+        foreach (List<string> line in filteredLines)
+        {
+            Console.WriteLine(line[0] + "|" + line[1]);
+        }
+
+
+
     }
     Console.ReadLine();
-}
-
-static string GetSiteContent(string site)
-{
-    using (WebClient client = new WebClient())
-    {
-        return client.DownloadString(site);
-    }
-}
-
-static List<string> FilterLines(string startsWith, List<string> lines)
-{
-    List<string> output = new List<string>();
-    foreach (string line in lines)
-    {
-        if (line.StartsWith(startsWith))
-        {
-            output.Add(line);
-        }
-    }
-    return output;
-}
-
-static List<string> RemoveFromLines(string remove, List<string> lines)
-{
-    List<string> output = new List<string>();
-    foreach (string line in lines)
-    {
-        output.Add(line.Replace(remove, ""));
-    }
-    return output;
-}
-
-static List<List<string>> SplitLines(string split, List<string> lines)
-{
-    List<List<string>> output = new List<List<string>>();
-    foreach (string key in lines)
-    {
-        output.Add(key.Split(new string[] { split }, StringSplitOptions.None).ToList());
-    }
-    return output;
-}
-
-static List<List<string>> FilterList(List<List<string>> list)
-{
-    List<List<string>> output = new List<List<string>>();
-    foreach (List<string> item in list)
-    {
-        // if the phrases "http", "socks", "prox" are not in the item[1].ToLower() then append it to the output list
-        if (item[1].ToLower().Contains("http") || item[1].ToLower().Contains("socks") || item[1].ToLower().Contains("prox"))
-        {
-            output.Add(item);
-        }
-    }
-    return output;
 }
 
 
