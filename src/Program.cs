@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using System.Threading;
 using System.Linq;
 using System.Collections.Generic;
+using System.Text.Json;
 
 // list of http proxy urls
 string httpRaw = await GetResponse("https://raw.githubusercontent.com/Necrownyx/Proxy-Scraper-and-Checker/main/http.sites");
@@ -46,6 +47,28 @@ void DrawLogo()
     Console.ForegroundColor = ConsoleColor.White;
 }
 
+async Task Upload()
+{
+    string data = "";
+    foreach (string line in File.ReadAllLines("checked.txt"))
+    {
+        data += line + "\n";
+    }
+
+    HttpClient client = new HttpClient();
+    var content = new StringContent(data);
+    var response = await client.PostAsync("https://api.pastes.dev/post", content);
+    var responseString = await response.Content.ReadAsStringAsync();
+
+    // Parse the JSON response to extract the key
+    var keyObject = JsonDocument.Parse(responseString).RootElement;
+    var key = keyObject.GetProperty("key").GetString();
+
+    Console.WriteLine("RAW URL: https://api.pastes.dev/" + key);
+    Console.WriteLine("Press any key to continue");
+    Console.ReadKey();
+}
+
 // Function to get input from user and return it as a string
 string GetInput(string prompt)
 {
@@ -84,7 +107,7 @@ async Task main()
 {
     Clear();
     DrawLogo();
-    string action = GetInput("Do you want to scrape proxies or check proxies? (scrape, check): ");
+    string action = GetInput("Do you want to scrape proxies or check proxies? (scrape, check, upload): ");
 
     if (action == "scrape")
     {
@@ -93,6 +116,10 @@ async Task main()
     else if (action == "check")
     {
         await Check();
+    }
+    else if (action == "upload")
+    {
+        await Upload();
     }
     else
     {
@@ -238,6 +265,17 @@ async Task Check()
     // print the number of valid proxies in checked.txt in green
     Console.ForegroundColor = ConsoleColor.Green;
     Console.WriteLine("Found " + uniqueCheckedLines.Length + " valid proxies");
+
+    // ask the user if they want to upload the proxies.
+    Console.ResetColor();
+    string uploadProxies = GetInput("Do you want to upload the proxies? (y/n): ");
+
+    if (uploadProxies == "y")
+    {
+        await Upload();
+        Console.WriteLine("Uploaded proxies");
+        Console.ReadLine();
+    }
 }
 
 while (true)
