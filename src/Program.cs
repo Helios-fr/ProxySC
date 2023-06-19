@@ -20,20 +20,18 @@ string[] socks4Urls = socks4Raw.Split("\n");
 string socks5Raw= await GetResponse("https://raw.githubusercontent.com/Necrownyx/Proxy-Scraper-and-Checker/main/socks5.sites");
 string[] socks5Urls = socks5Raw.Split("\n");
 
+// set the console title
+Console.Title = "Proxy Scraper and Checker by Nyx";
+
 string[] logo = {
-    @"  _____                        _____                                           _____ _               _             ",
-    @" |  __ \                      / ____|                                   _     / ____| |             | |            ",
-    @" | |__) | __ _____  ___   _  | (___   ___ _ __ __ _ _ __   ___ _ __   _| |_  | |    | |__   ___  ___| | _____ _ __ ",
-    @" |  ___/ '__/ _ \ \/ / | | |  \___ \ / __| '__/ _` | '_ \ / _ \ '__| |_   _| | |    | '_ \ / _ \/ __| |/ / _ \ '__|",
-    @" | |   | | | (_) >  <| |_| |  ____) | (__| | | (_| | |_) |  __/ |      |_|   | |____| | | |  __/ (__|   <  __/ |   ",
-    @" |_|   |_|  \___/_/\_\\__, | |_____/ \___|_|  \__,_| .__/ \___|_|             \_____|_| |_|\___|\___|_|\_\___|_|   ",
-    @"                       __/ |                       | |                                                             ",
-    @"                      |___/                        |_|                                         Version 1.0.0       ",
-    @"  ___           _  _          ",
-    @" | _ )_  _     | \| |_  ___ __    Donations much appreciated!",
-    @" | _ \ || |    | .` | || \ \ /    ETH: 0x65ced7F343115Eca8Ea6C027d4613d4Cac756288",
-    @" |___/\_, |    |_|\_|\_, /_\_\    Monero: 47Hg2xqF4mXJUsPppzsbwn5nXtg5V1VsPaSTuTNv4CKbAEGG",
-    @"      |__/           |__/               : MbnRDWDjWhvhP62brcapnPvaVfYRGA1TjPmjvk7e4CG7LKC"
+    @"  _____                      _____  _____ ",
+    @" |  __ \  By Nyx            / ____|/ ____|",
+    @" | |__) | __ _____  ___   _| (___ | |     ",
+    @" |  ___/ '__/ _ \ \/ / | | |\___ \| |     ",
+    @" | |   | | | (_) >  <| |_| |____) | |____ ",
+    @" |_|   |_|  \___/_/\_\\__, |_____/ \_____|",
+    @"                       __/ |              ",
+    @"      pastebin.com/   |___/   sJAzRdyK    "
 };
 
 void DrawLogo()
@@ -107,7 +105,7 @@ async Task main()
 {
     Clear();
     DrawLogo();
-    string action = GetInput("Do you want to scrape proxies or check proxies? (scrape, check, upload): ");
+    string action = GetInput("What do you want to do? (scrape, check, upload): ");
 
     if (action == "scrape")
     {
@@ -273,8 +271,6 @@ async Task Check()
     if (uploadProxies == "y")
     {
         await Upload();
-        Console.WriteLine("Uploaded proxies");
-        Console.ReadLine();
     }
 }
 
