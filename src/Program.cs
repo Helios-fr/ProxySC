@@ -324,11 +324,10 @@ async Task Find()
         // If the i[0] element has an '&' in it, remove the i element from the list
         pageLists.RemoveAll(item => item[0].Contains("&"));
 
-        
+        // print all the tit
 
-        // Sort the list to only contain pastes that have the word "prox" in them
-        pageLists.RemoveAll(item => !item[0].Contains("prox"));
-        pageLists = pageLists.ConvertAll(x => new string[] { i[4] + x[0] });
+        // Sort the list to only contain pastes that have the word "prox" in them convert the titles to lowercase first
+        pageLists.RemoveAll(item => !item[1].ToLower().Contains("prox"));
         // append the 6th instruction to the beginning the first element of every list
         pageLists = pageLists.ConvertAll(x => new string[] { i[4] + x[0] });
 
@@ -338,8 +337,9 @@ async Task Find()
         {
             Console.WriteLine(string.Join(", ", item));
         }
-        Console.ReadLine();
     }
+    Console.WriteLine("Done");
+    Console.ReadLine();
 }
 
 while (true)
