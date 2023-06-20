@@ -85,6 +85,20 @@ async Task<string> GetResponse(string url)
     return responseBody;
 }
 
+// function to get the remote instructions from pastebin  split them by line then split them by | to create a list of lists
+async Task<List<List<string>>> GetInstructions()
+{
+    string raw = await GetResponse("https://raw.githubusercontent.com/Nyxqxx/ProxySC/main/site.patterns");
+    string[] lines = raw.Split("\n");
+    List<List<string>> instructions = new List<List<string>>();
+    foreach (string line in lines)
+    {
+        instructions.Add(line.Split("|").ToList());
+    }
+    return instructions;
+}
+
+
 // funstion to perfom the exit sequence
 void Exit()
 {
@@ -280,29 +294,58 @@ async Task Check()
 
 async Task Find()
 {
-    // get the patterns.txt file from the server
-    string patterns = await GetResponse("https://raw.githubusercontent.com/Necrownyx/ProxyScraper/main/site.patterns");
+    // Get the instructions from the remote
+    List<List<string>> instructions = await GetInstructions();
 
-    // split the patterns string into an array of strings
-    string[] patternsArray = patterns.Split("\n");
-
-    // spit the lines at the | character and store as a list of lists called instructions
-    List<List<string>> instructions = new List<List<string>>();
-    foreach (string pattern in patternsArray)
+    foreach (List<string> i in instructions)
     {
-        instructions.Add(pattern.Split("|").ToList());
-    }
+        // Get the page
+        WebClient client = new WebClient();
+        string page = await client.DownloadStringTaskAsync(i[0]);
 
-    // console log the instructions
-    Console.ForegroundColor = ConsoleColor.Green;
-    Console.WriteLine("Instructions:");
-    Console.ResetColor();
-    foreach (List<string> instruction in instructions)
-    {
-        Console.WriteLine(instruction[0] + " - " + instruction[1]);
+        // Split the page by the first instruction
+        string[] splitPage = page.Split(new string[] { i[1] }, StringSplitOptions.None);
+
+        // Remove the first element
+        List<string> pageList = new List<string>(splitPage);
+        pageList.RemoveAt(0);
+
+        // Split the page by the second instruction
+        pageList = pageList.ConvertAll(x => x.Split(new string[] { i[2] }, StringSplitOptions.None)[0]);
+
+        // Split every element by the third instruction then turn the list into a list of lists
+        List<string[]> pageLists = new List<string[]>();
+        foreach (string element in pageList)
+        {
+            string[] splitElement = element.Split(new string[] { i[3] }, StringSplitOptions.None);
+            pageLists.Add(splitElement);
+        }
+
+        // If the i[0] element has an '&' in it, remove the i element from the list
+        pageLists.RemoveAll(item => item[0].Contains("&"));
+
+        // print the list
+        foreach (string[] item in pageLists)
+        {
+            Console.WriteLine(string.Join(", ", item));
+        }
+
+        Console.WriteLine("___________________________");
+
+        // Sort the list to only contain pastes that have the word "prox" in them
+        pageLists.RemoveAll(item => !item[0].Contains("prox"));
+
+        // append the 6th instruction to the beginning the first element of every list
+        pageLists = pageLists.ConvertAll(x => new string[] { i[4] + x[0] });
+
+
+        // Print the list
+        foreach (string[] item in pageLists)
+        {
+            Console.WriteLine(string.Join(", ", item));
+        }
+        Console.ReadLine();
     }
-    // wait for the user to press enter
-    Console.ReadLine();
 }
 
 while (true)
