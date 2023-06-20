@@ -280,97 +280,28 @@ async Task Check()
 
 async Task Find()
 {
+    // get the patterns.txt file from the server
+    string patterns = await GetResponse("https://raw.githubusercontent.com/Necrownyx/ProxyScraper/main/site.patterns");
 
-    string[] data = File.ReadAllLines("data.txt");
-    // split every line in data by the | character and add it to the information list
-    List<List<string>> information = new List<List<string>>();
-    foreach (string line in data)
+    // split the patterns string into an array of strings
+    string[] patternsArray = patterns.Split("\n");
+
+    // spit the lines at the | character and store as a list of lists called instructions
+    List<List<string>> instructions = new List<List<string>>();
+    foreach (string pattern in patternsArray)
     {
-        information.Add(line.Split('|').ToList());
-        Console.WriteLine(line);
+        instructions.Add(pattern.Split("|").ToList());
     }
 
-    foreach (List<string> info in information)
+    // console log the instructions
+    Console.ForegroundColor = ConsoleColor.Green;
+    Console.WriteLine("Instructions:");
+    Console.ResetColor();
+    foreach (List<string> instruction in instructions)
     {
-        string site = info[0];
-        string startsWith = info[1];
-        string removeStart = info[2];
-        string removeEnd = info[3];
-        string split = info[4];
-        string raw_view_url = info[5];
-
-        // get the content of the site
-        string content = await GetResponse(site);
-
-        // sort the content by the startsWith string
-        string[] lines = content.Split("\n");
-        List<string> sortedLines = new List<string>();
-        foreach (string line in lines)
-        {
-            if (line.StartsWith(startsWith))
-            {
-                sortedLines.Add(line);
-            }
-        }
-
-        // remove the removeStart string from every line in sortedLines
-        List<string> removedStart = new List<string>();
-        foreach (string line in sortedLines)
-        {
-            removedStart.Add(line.Replace(removeStart, ""));
-        }
-
-        // remove the removeEnd string from every line in removedStart
-        List<string> removedEnd = new List<string>();
-        foreach (string line in removedStart)
-        {
-            removedEnd.Add(line.Replace(removeEnd, ""));
-        }
-
-        // split every line in removedEnd by the split string and add it to the splitLines list
-        List<List<string>> splitLines = new List<List<string>>();
-        foreach (string line in removedEnd)
-        {
-            splitLines.Add(line.Split(split).ToList());
-        }
-
-        // loop through every line in splitLines and add the raw_view_url to the start of the current 0 index
-        List<List<string>> finalLines = new List<List<string>>();
-        foreach (List<string> line in splitLines)
-        {
-            line[0] = raw_view_url + line[0];
-            finalLines.Add(line);
-        }
-
-        // filter out any lines that dont contain the phrases http, socks, prox in the 1 index
-        List<List<string>> filteredLines = new List<List<string>>();
-        foreach (List<string> line in finalLines)
-        {
-            // convert line 1 to lowercase
-            string line1 = line[1].ToLower();
-            // if line1 contains http, socks or prox, add it to filteredLines
-            if (line1.Contains("http") || line1.Contains("socks") || line1.Contains("prox"))
-            {
-                filteredLines.Add(line);
-            }
-        }
-
-        // console leg the filtered lines
-        foreach (List<string> line in filteredLines)
-        {
-            Console.WriteLine(line[0] + "|" + line[1]);
-        }
-
-        // save just the urls to sites.txt
-        foreach (List<string> line in filteredLines)
-        {
-            File.AppendAllText("sites.txt", line[0] + "\n");
-        }
-
-
-
-
+        Console.WriteLine(instruction[0] + " - " + instruction[1]);
     }
+    // wait for the user to press enter
     Console.ReadLine();
 }
 
