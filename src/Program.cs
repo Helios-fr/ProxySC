@@ -157,11 +157,29 @@ async Task Scrape()
     else if (proxyType == "socks5") { urls = socks5Urls; }
     else { Console.WriteLine("Invalid proxy type"); }
 
+    // if yes add the proxies from sites.txt to the urls array
+    string useFound = GetInput("Do you want to use the found pastes from sites.txt? (y/n): ");
+    if (useFound == "y")
+    {
+        foreach (string line in File.ReadAllLines("sites.txt"))
+        {
+            urls.Append(line);
+        }
+    }
 
     foreach (string url in urls)
     {
         // make a web request to the url and store the response in a string
-        string response = await GetResponse(url);
+        string response = "";
+        try {
+            response = await GetResponse(url);
+        }
+        catch
+        {
+            Console.WriteLine("Failed to scrape " + url);
+            // skip to the next url
+            continue;
+        }
 
         // split the response string into an array of strings
         string[] proxies = response.Split("\n");
