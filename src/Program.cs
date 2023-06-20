@@ -337,8 +337,12 @@ async Task Find()
         {
             Console.WriteLine(string.Join(", ", item));
         }
+
+        // append the urls found to the sites.txt file
+        foreach (string[] item in pageLists) {
+            File.AppendAllText("sites.txt", string.Join(",", item) + Environment.NewLine);
+        }
     }
-    Console.WriteLine("Done");
     Console.ReadLine();
 }
 
