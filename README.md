@@ -33,9 +33,9 @@ Refer to the below sections for the features.
 
 ## Demo Videos
 ###### *videos may not represent current verion
-### ![Scraping Video](https://raw.githubusercontent.com/Necrownyx/Proxy-Scraper-and-Checker/main/demo/scrape-demo.mp4)
-### ![Checking Video](https://raw.githubusercontent.com/Necrownyx/Proxy-Scraper-and-Checker/main/demo/check-demo.mp4)
-### ![Uploading Video](https://raw.githubusercontent.com/Necrownyx/Proxy-Scraper-and-Checker/main/demo/upload-demo.mp4)
+### [Scraping Video](https://raw.githubusercontent.com/Necrownyx/Proxy-Scraper-and-Checker/main/demo/scrape-demo.mp4)
+### [Checking Video](https://raw.githubusercontent.com/Necrownyx/Proxy-Scraper-and-Checker/main/demo/check-demo.mp4)
+### [Uploading Video](https://raw.githubusercontent.com/Necrownyx/Proxy-Scraper-and-Checker/main/demo/upload-demo.mp4)
 <br><br><br>
 ## Donation
 Any donation is apreciated, donations can be provided using the below cryptocurrencies.
