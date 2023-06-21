@@ -221,7 +221,14 @@ async Task Check()
     Clear();
     DrawLogo();
 
-    if (File.Exists("checked.txt")) { File.Delete("checked.txt"); }
+    if (File.Exists("checked.txt")) {
+        Console.WriteLine("checked.txt already exists do you want to delete it? (y/n): ");
+        string delete = Console.ReadLine();
+        if (delete == "y")
+        {
+            File.Delete("checked.txt");
+        }
+    }
 
     // function to check a single proxy
     async Task CheckProxy(string proxy)
