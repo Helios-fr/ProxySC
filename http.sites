@@ -1,5 +1,4 @@
 https://raw.githubusercontent.com/monosans/proxy-list/main/proxies/http.txt
-https://api.proxyscrape.com/v2/?request=getproxies&protocol=http&timeout=10000&country=all&ssl=all&anonymity=all
 https://raw.githubusercontent.com/proxy4parsing/proxy-list/main/http.txt
 https://www.proxy-list.download/api/v1/get?type=https
 https://api.openproxylist.xyz/http.txt
