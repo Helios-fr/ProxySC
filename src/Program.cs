@@ -8,16 +8,16 @@ using System.Linq;
 using System.Collections.Generic;
 using System.Text.Json;
 
-// list of http proxy urls
-string httpRaw = await GetResponse("https://raw.githubusercontent.com/Necrownyx/Proxy-Scraper-and-Checker/main/http.sites");
+// list of http proxy urls  + # + random number to prevent caching
+string httpRaw = await GetResponse("https://raw.githubusercontent.com/Necrownyx/Proxy-Scraper-and-Checker/main/http.sites#" + new Random().Next(0, 999999999));
 string[] httpUrls = httpRaw.Split("\n");
 
 // list of socks4 proxy urls
-string socks4Raw = await GetResponse("https://raw.githubusercontent.com/Necrownyx/Proxy-Scraper-and-Checker/main/socks4.sites");
+string socks4Raw = await GetResponse("https://raw.githubusercontent.com/Necrownyx/Proxy-Scraper-and-Checker/main/socks4.sites#" + new Random().Next(0, 999999999));
 string[] socks4Urls = socks4Raw.Split("\n");
 
 // list of socks5 proxy urls
-string socks5Raw= await GetResponse("https://raw.githubusercontent.com/Necrownyx/Proxy-Scraper-and-Checker/main/socks5.sites");
+string socks5Raw= await GetResponse("https://raw.githubusercontent.com/Necrownyx/Proxy-Scraper-and-Checker/main/socks5.sites#" + new Random().Next(0, 999999999));
 string[] socks5Urls = socks5Raw.Split("\n");
 
 // set the console title
@@ -79,11 +79,27 @@ string GetInput(string prompt)
 async Task<string> GetResponse(string url)
 {
     HttpClient client = new HttpClient();
-    HttpResponseMessage response = await client.GetAsync(url);
-    response.EnsureSuccessStatusCode();
-    string responseBody = await response.Content.ReadAsStringAsync();
-    return responseBody;
+    // Set a failure timeout of 10 seconds
+    TimeSpan timeoutDuration = TimeSpan.FromSeconds(10);
+
+    using (var cancellationTokenSource = new CancellationTokenSource(timeoutDuration))
+    {
+        try
+        {
+            HttpResponseMessage response = await client.GetAsync(url, cancellationTokenSource.Token);
+            response.EnsureSuccessStatusCode();
+            string responseBody = await response.Content.ReadAsStringAsync();
+            return responseBody;
+        }
+        catch (OperationCanceledException)
+        {
+            // Request timed out
+            throw new TimeoutException("The request timed out.");
+        }
+    }
 }
+
+
 
 // function to get the remote instructions from pastebin  split them by line then split them by | to create a list of lists
 async Task<List<List<string>>> GetInstructions()
@@ -143,6 +159,8 @@ async Task main()
     }
 }
 
+object fileLock = new object();
+
 async Task Scrape()
 {
     // ask the user what type of proxy they want to scrape
@@ -155,14 +173,16 @@ async Task Scrape()
         if (overwrite == "y")
         {
             File.Delete("unchecked.txt");
+            // write the addvertisement to the top of the file
+            File.AppendAllText("unchecked.txt", "📀   PROXYS SCRAPED USING PROXYSC   📀\n");
+            File.AppendAllText("unchecked.txt", "📀 http://github.com/Nyxqxx/ProxySC 📀\n\n");
         }
     }
 
     string proxyType = GetInput("What type of proxy do you want to scrape? (http, socks4, socks5, all): ");
 
-
     string[] urls = { };
-    if (proxyType == "http") {  urls = httpUrls; }
+    if (proxyType == "http") { urls = httpUrls; }
     else if (proxyType == "socks4") { urls = socks4Urls; }
     else if (proxyType == "socks5") { urls = socks5Urls; }
     else if (proxyType == "all")
@@ -171,13 +191,13 @@ async Task Scrape()
     }
     else { Console.WriteLine("Invalid proxy type"); return; }
 
-    // if yes add the proxies from sites.txt to the urls array
+    // if yes, add the proxies from sites.txt to the urls array
     string useFound = GetInput("Do you want to use the found pastes from sites.txt? (y/n): ");
     if (useFound == "y")
     {
         foreach (string line in File.ReadAllLines("sites.txt"))
         {
-            urls.Append(line);
+            urls = urls.Append(line).ToArray();
         }
     }
 
@@ -204,29 +224,19 @@ async Task Scrape()
         Console.WriteLine("\x1b[32m[+]\x1b[0m" + "Scraped " + proxies.Length + " proxies from " + url);
 
         // loop through all the proxies in the proxies array and write them to unchecked.txt if they start with a number
+        string finalProxies = "";
         foreach (string proxy in proxies)
         {
             if (proxy.StartsWith("1") || proxy.StartsWith("2") || proxy.StartsWith("3") || proxy.StartsWith("4") || proxy.StartsWith("5") || proxy.StartsWith("6") || proxy.StartsWith("7") || proxy.StartsWith("8") || proxy.StartsWith("9") || proxy.StartsWith("0"))
             {
-                if (filewrite == true)
-                {
-                    filewrite = false;
-                    File.AppendAllText("unchecked.txt", proxy + "\n");
-                    filewrite = true;
-                }
-                else
-                {
-                    // wait for the lock to be released
-                    while (filewrite == true) {
-                        await Task.Delay(100);
-                    }
-                    // lock the file
-                    filewrite = false;
-                    File.AppendAllText("unchecked.txt", proxy + "\n");
-                    // unlock the file
-                    filewrite = true;
-                }
+                finalProxies += proxy + "\n";
             }
+        }
+        // wait for the file lock to be released
+        lock (fileLock)
+        {
+            // write the proxies to unchecked.txt
+            File.AppendAllText("unchecked.txt", finalProxies);
         }
     }
 
@@ -234,7 +244,7 @@ async Task Scrape()
     string useThreads = GetInput("Do you want to use threads? (y/n): ");
     if (useThreads == "y")
     {
-        // set the thread count to the number of urls if there is less than 100 urls
+        // set the thread count to the number of urls if there are fewer than 100 urls
         int threadCount = urls.Length;
         bool filewrite = true;
         if (urls.Length > 100)
@@ -242,13 +252,19 @@ async Task Scrape()
             // ask the user how many threads they want to use
             threadCount = Convert.ToInt32(GetInput("How many threads do you want to use? (100+): "));
         }
+
         // create a list of tasks
         List<Task> tasks = new List<Task>();
+
+        // create a lock object to synchronize file access
+        object fileLock = new object();
+
         // loop through the urls array and start a new task for each url
         foreach (string url in urls)
         {
             tasks.Add(ScrapeUrl(url, filewrite));
         }
+
         // wait for all the tasks to finish
         await Task.WhenAll(tasks);
     }
@@ -269,7 +285,8 @@ async Task Scrape()
     // print the number of unique proxies scraped in green
     Console.ForegroundColor = ConsoleColor.Green;
     Console.WriteLine("Scraped " + uniqueLines.Length + " unique proxies");
-    // ask user if they want to check the proxies
+
+    // ask the user if they want to check the proxies
     Console.ResetColor();
     string checkProxies = GetInput("Do you want to check the proxies? (y/n): ");
 
