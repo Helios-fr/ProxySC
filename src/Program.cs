@@ -148,14 +148,28 @@ async Task Scrape()
     // ask the user what type of proxy they want to scrape
     Clear();
     DrawLogo();
-    string proxyType = GetInput("What type of proxy do you want to scrape? (http, socks4, socks5): ");
+
+    if (File.Exists("unchecked.txt"))
+    {
+        string overwrite = GetInput("unchecked.txt already exists, do you want to overwrite it? (y/n): ");
+        if (overwrite == "y")
+        {
+            File.Delete("unchecked.txt");
+        }
+    }
+
+    string proxyType = GetInput("What type of proxy do you want to scrape? (http, socks4, socks5, all): ");
 
 
     string[] urls = { };
     if (proxyType == "http") {  urls = httpUrls; }
     else if (proxyType == "socks4") { urls = socks4Urls; }
     else if (proxyType == "socks5") { urls = socks5Urls; }
-    else { Console.WriteLine("Invalid proxy type"); }
+    else if (proxyType == "all")
+    {
+        urls = httpUrls.Concat(socks4Urls).Concat(socks5Urls).ToArray();
+    }
+    else { Console.WriteLine("Invalid proxy type"); return; }
 
     // if yes add the proxies from sites.txt to the urls array
     string useFound = GetInput("Do you want to use the found pastes from sites.txt? (y/n): ");
@@ -167,18 +181,19 @@ async Task Scrape()
         }
     }
 
-    foreach (string url in urls)
+    // function to scrape proxies from a url
+    async Task ScrapeUrl(string url, bool filewrite)
     {
         // make a web request to the url and store the response in a string
         string response = "";
-        try {
+        try
+        {
             response = await GetResponse(url);
         }
         catch
         {
-            Console.WriteLine("Failed to scrape " + url);
-            // skip to the next url
-            continue;
+            Console.WriteLine("\x1b[31m[-]\x1b[0m" + "Failed to scrape proxies from url: " + url);
+            return;
         }
 
         // split the response string into an array of strings
@@ -186,15 +201,63 @@ async Task Scrape()
 
         // print the number of proxies scraped from the url in green
         Console.ForegroundColor = ConsoleColor.Green;
-        Console.WriteLine("Scraped " + proxies.Length + " proxies from " + url);
+        Console.WriteLine("\x1b[32m[+]\x1b[0m" + "Scraped " + proxies.Length + " proxies from " + url);
 
         // loop through all the proxies in the proxies array and write them to unchecked.txt if they start with a number
         foreach (string proxy in proxies)
         {
             if (proxy.StartsWith("1") || proxy.StartsWith("2") || proxy.StartsWith("3") || proxy.StartsWith("4") || proxy.StartsWith("5") || proxy.StartsWith("6") || proxy.StartsWith("7") || proxy.StartsWith("8") || proxy.StartsWith("9") || proxy.StartsWith("0"))
             {
-                File.AppendAllText("unchecked.txt", proxy + "\n");
+                if (filewrite == true)
+                {
+                    filewrite = false;
+                    File.AppendAllText("unchecked.txt", proxy + "\n");
+                    filewrite = true;
+                }
+                else
+                {
+                    // wait for the lock to be released
+                    while (filewrite == true) {
+                        await Task.Delay(100);
+                    }
+                    // lock the file
+                    filewrite = false;
+                    File.AppendAllText("unchecked.txt", proxy + "\n");
+                    // unlock the file
+                    filewrite = true;
+                }
             }
+        }
+    }
+
+    // ask the user if they want to use threads
+    string useThreads = GetInput("Do you want to use threads? (y/n): ");
+    if (useThreads == "y")
+    {
+        // set the thread count to the number of urls if there is less than 100 urls
+        int threadCount = urls.Length;
+        bool filewrite = true;
+        if (urls.Length > 100)
+        {
+            // ask the user how many threads they want to use
+            threadCount = Convert.ToInt32(GetInput("How many threads do you want to use? (100+): "));
+        }
+        // create a list of tasks
+        List<Task> tasks = new List<Task>();
+        // loop through the urls array and start a new task for each url
+        foreach (string url in urls)
+        {
+            tasks.Add(ScrapeUrl(url, filewrite));
+        }
+        // wait for all the tasks to finish
+        await Task.WhenAll(tasks);
+    }
+    else
+    {
+        // loop through the urls array and scrape each url
+        foreach (string url in urls)
+        {
+            await ScrapeUrl(url, true);
         }
     }
 
