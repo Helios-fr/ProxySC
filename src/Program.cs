@@ -135,25 +135,31 @@ async Task main()
 {
     Clear();
     DrawLogo();
-    string action = GetInput("What do you want to do? (scrape, check, upload): ");
 
-    if (action == "scrape")
+    Console.WriteLine("\x1b[32m1.\x1b[0m Scrape Proxies");
+    Console.WriteLine("\x1b[32m2.\x1b[0m Check Proxies");
+    Console.WriteLine("\x1b[32m3.\x1b[0m Upload Proxies");
+    Console.WriteLine("\x1b[33m4.\x1b[0m Find Proxies \x1b[31m* BETA *\x1b[0m");
+    Console.WriteLine("\x1b[31m5.\x1b[0m Exit");
+    string action = GetInput("Select an option: ");
+
+    if (action == "1")
     {
         await Scrape();
     }
-    else if (action == "check")
+    else if (action == "2")
     {
         await Check();
     }
-    else if (action == "upload")
+    else if (action == "3")
     {
         await Upload();
     }
-    else if (action == "find")
+    else if (action == "4")
     {
         await Find();
     }
-    else if (action == "exit")
+    else if (action == "5")
     {
         Exit();
     }
