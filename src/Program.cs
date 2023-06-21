@@ -153,6 +153,10 @@ async Task main()
     {
         await Find();
     }
+    else if (action == "exit")
+    {
+        Exit();
+    }
     else
     {
         Console.WriteLine("Invalid action");
