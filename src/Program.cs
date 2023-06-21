@@ -222,11 +222,13 @@ async Task Check()
     DrawLogo();
 
     if (File.Exists("checked.txt")) {
-        Console.WriteLine("checked.txt already exists do you want to delete it? (y/n): ");
-        string delete = Console.ReadLine();
+        string delete = GetInput("Do you want to delete the checked.txt file? (y/n): ");
         if (delete == "y")
         {
             File.Delete("checked.txt");
+            // create the checked.txt file and append the advertising text to it
+            File.AppendAllText("checked.txt", "📀 PROXYS SCRAPED AND CHECKED USING PROXYSC 📀\n");
+            File.AppendAllText("checked.txt", "📀     http://github.com/Nyxqxx/ProxySC     📀\n\n");
         }
     }
 
@@ -234,66 +236,48 @@ async Task Check()
     async Task CheckProxy(string proxy)
     {
         string[] proxyParts = proxy.Split(":");
+        // try to connect to
         try
         {
-            // create a new HttpClientHandler
             HttpClientHandler handler = new HttpClientHandler();
-
-            // set the proxy of the HttpClientHandler to the proxy that was passed to the function
             handler.Proxy = new WebProxy(proxyParts[0], int.Parse(proxyParts[1]));
-
-            // create a new HttpClient with the HttpClientHandler
             HttpClient client = new HttpClient(handler);
-
-            // set the timeout of the HttpClient to 10 seconds
-            client.Timeout = TimeSpan.FromSeconds(10);
-
-            // try to make a web request to https://api.ipify.org/ to get the ip address of the proxy
             string response = await client.GetStringAsync("https://api.ipify.org/");
 
             // write the proxy to checked.txt if the request was successful
             File.AppendAllText("checked.txt", proxy + "\n");
 
-            // print the proxy and the ip address of the proxy
-            Console.ForegroundColor = ConsoleColor.Green;
-            Console.WriteLine("Valid proxy: " + proxy);
+            Console.WriteLine("\x1b[32m[+]\x1b[0m " + proxy + " - Working");
         }
         catch
         {
-            // if the request failed, print an error message
-            Console.ForegroundColor = ConsoleColor.Red;
-            Console.WriteLine("Invalid proxy: " + proxy);
+            Console.WriteLine("\x1b[31m[-]\x1b[0m " + proxy + " - Not Working");
         }
     }
 
     // ask the user how many threads they want to use
-    int threads = int.Parse(GetInput("How many threads do you want to use? (recommended: 1000+): "));
+    int threads = 10000000;
+    try { threads = int.Parse(GetInput("How many threads do you want to use? (recommended: 1000-inf): ")); }
+    catch {}
 
     // ask the user how many file reccuisons they want to use
-    int recursions = int.Parse(GetInput("How many file recursions do you want to use? (recommended: 3 - 10): "));
-
-    // read all the proxies from unchecked.txt into an array of strings
-    string[] uncheckedfile = File.ReadAllLines("unchecked.txt");
-
-    // add the list to itself recursions amount of times
-    string[] proxiesToCheck = uncheckedfile;
+    int recursions = int.Parse(GetInput("How many file recursions do you want? (recommended: 3 - 10): "));
+    string[] proxiesToCheck =  File.ReadAllLines("unchecked.txt");
     for (int i = 0; i < recursions; i++)
     {
-        proxiesToCheck = proxiesToCheck.Concat(uncheckedfile).ToArray();
+        proxiesToCheck = proxiesToCheck.Concat(proxiesToCheck).ToArray();
     }
 
 
     List<Task> tasks = new List<Task>();
-    // loop through all the proxies in the proxies array
     foreach (string proxy in proxiesToCheck)
     {
-        // add a new task to the tasks list that runs the CheckProxy function with the current proxy\
         tasks.Add(CheckProxy(proxy));
-        // if the amount of tasks in the tasks list is equal to the amount of threads the user wants to use, wait for all the tasks to finish and then clear the tasks list
+        // if the amount of tasks in the tasks list is equal to the amount of threads the user wants to use, wait for a task to finish and remove it from the list
         if (tasks.Count == threads)
         {
-            await Task.WhenAll(tasks);
-            tasks.Clear();
+            await Task.WhenAny(tasks);
+            tasks.RemoveAt(0);
         }
     }
     await Task.WhenAll(tasks);
