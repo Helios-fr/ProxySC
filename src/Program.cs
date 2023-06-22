@@ -306,6 +306,7 @@ async Task Scrape()
     }
 }
 
+
 async Task Check()
 {
     Clear();
@@ -323,8 +324,10 @@ async Task Check()
     }
 
     // function to check a single proxy
-    async Task CheckProxy(string proxy)
+    int checkedProxies = 0;
+    async Task CheckProxy(int number, string[] proxiesToCheck)
     {
+        string proxy = proxiesToCheck[number];
         string[] proxyParts = proxy.Split(":");
         // try to connect to
         try
@@ -337,11 +340,30 @@ async Task Check()
             // write the proxy to checked.txt if the request was successful
             File.AppendAllText("checked.txt", proxy + "\n");
 
-            Console.WriteLine("\x1b[32m[+]\x1b[0m " + proxy + " - Working");
+            // generate a - string with spaces before the - to make every line the same length
+            string spaces = "";
+            for (int i = 0; i < 50 - proxy.Length; i++)
+            {
+                spaces += " ";
+            }
+            spaces += "- ";
+
+            // print the working proxy in green then a fraction and the total number of proxies
+            
+            Console.WriteLine("\x1b[32m[+]\x1b[0m " + proxy + spaces + checkedProxies + "/" + proxiesToCheck.Length);
+            checkedProxies++;
         }
         catch
         {
-            Console.WriteLine("\x1b[31m[-]\x1b[0m " + proxy + " - Not Working");
+            // generate a - string with spaces before the - to make every line the same length
+            string spaces = "";
+            for (int i = 0; i < 50 - proxy.Length; i++)
+            {
+                spaces += " ";
+            }
+            spaces += "- ";
+            Console.WriteLine("\x1b[31m[-]\x1b[0m " + proxy + spaces + checkedProxies + "/" + proxiesToCheck.Length);
+            checkedProxies++;
         }
     }
 
@@ -358,11 +380,10 @@ async Task Check()
         proxiesToCheck = proxiesToCheck.Concat(proxiesToCheck).ToArray();
     }
 
-
     List<Task> tasks = new List<Task>();
-    foreach (string proxy in proxiesToCheck)
+    for (int i = 0; i < proxiesToCheck.Length; i++)
     {
-        tasks.Add(CheckProxy(proxy));
+        tasks.Add(CheckProxy(i, proxiesToCheck));
         // if the amount of tasks in the tasks list is equal to the amount of threads the user wants to use, wait for a task to finish and remove it from the list
         if (tasks.Count == threads)
         {
