@@ -183,12 +183,10 @@ async Task Scrape()
         if (overwrite == "y")
         {
             File.Delete("unchecked.txt");
-            // write the addvertisement to the top of the file
-            File.AppendAllText("unchecked.txt", "📀   PROXYS SCRAPED USING PROXYSC   📀\n");
-            File.AppendAllText("unchecked.txt", "📀 http://github.com/Nyxqxx/ProxySC 📀\n\n");
         }
     }
-
+    File.AppendAllText("unchecked.txt", "📀   PROXYS SCRAPED USING PROXYSC   📀\n");
+    File.AppendAllText("unchecked.txt", "📀 http://github.com/Nyxqxx/ProxySC 📀\n\n");
     string proxyType = GetInput("What type of proxy do you want to scrape? (http, socks4, socks5, all): ");
 
     string[] urls = { };
@@ -223,7 +221,7 @@ async Task Scrape()
         }
         catch
         {
-            Console.WriteLine("\x1b[31m[-]\x1b[0m" + "Failed to scrape proxies from url: " + url + " - " + counter + "/" + urls.Length);
+            Console.WriteLine("\x1b[31m[-]\x1b[0m" + " Failed to scrape proxies from url: " + url + " - " + counter + "/" + urls.Length);
             return;
         }
 
@@ -233,7 +231,7 @@ async Task Scrape()
         // print the number of proxies scraped from the url in green
         Console.ForegroundColor = ConsoleColor.Green;
         // generate a - string with spaces to fill the rest of the line
-        Console.WriteLine("\x1b[32m[+]\x1b[0m" + "Scraped " + proxies.Length + " proxies from " + url + " - " + counter + "/" + urls.Length);
+        Console.WriteLine("\x1b[32m[+]\x1b[0m" + " Scraped " + proxies.Length + " proxies from " + url + " - " + counter + "/" + urls.Length);
         counter++;
 
         // loop through all the proxies in the proxies array and write them to unchecked.txt if they start with a number
@@ -320,11 +318,10 @@ async Task Check()
         if (delete == "y")
         {
             File.Delete("checked.txt");
-            // create the checked.txt file and append the advertising text to it
-            File.AppendAllText("checked.txt", "📀 PROXYS SCRAPED AND CHECKED USING PROXYSC 📀\n");
-            File.AppendAllText("checked.txt", "📀     http://github.com/Nyxqxx/ProxySC     📀\n\n");
         }
     }
+    File.AppendAllText("checked.txt", "📀 PROXYS SCRAPED AND CHECKED USING PROXYSC 📀\n");
+    File.AppendAllText("checked.txt", "📀     http://github.com/Nyxqxx/ProxySC     📀\n\n");
 
     // function to check a single proxy
     int checkedProxies = 0;
