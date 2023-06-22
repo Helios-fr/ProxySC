@@ -212,6 +212,7 @@ async Task Scrape()
     }
 
     // function to scrape proxies from a url
+    int counter = 0;
     async Task ScrapeUrl(string url, bool filewrite)
     {
         // make a web request to the url and store the response in a string
@@ -222,7 +223,7 @@ async Task Scrape()
         }
         catch
         {
-            Console.WriteLine("\x1b[31m[-]\x1b[0m" + "Failed to scrape proxies from url: " + url);
+            Console.WriteLine("\x1b[31m[-]\x1b[0m" + "Failed to scrape proxies from url: " + url + " - " + counter + "/" + urls.Length);
             return;
         }
 
@@ -231,7 +232,9 @@ async Task Scrape()
 
         // print the number of proxies scraped from the url in green
         Console.ForegroundColor = ConsoleColor.Green;
-        Console.WriteLine("\x1b[32m[+]\x1b[0m" + "Scraped " + proxies.Length + " proxies from " + url);
+        // generate a - string with spaces to fill the rest of the line
+        Console.WriteLine("\x1b[32m[+]\x1b[0m" + "Scraped " + proxies.Length + " proxies from " + url + " - " + counter + "/" + urls.Length);
+        counter++;
 
         // loop through all the proxies in the proxies array and write them to unchecked.txt if they start with a number
         string finalProxies = "";
