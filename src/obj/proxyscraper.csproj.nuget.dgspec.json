@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\lawth\\OneDrive\\Documents\\GitHub\\proxygrabber\\src\\proxyscraper.csproj": {}
+    "C:\\Users\\lawth\\OneDrive\\Documents\\GitHub\\ProxySC\\src\\proxyscraper.csproj": {}
   },
   "projects": {
-    "C:\\Users\\lawth\\OneDrive\\Documents\\GitHub\\proxygrabber\\src\\proxyscraper.csproj": {
+    "C:\\Users\\lawth\\OneDrive\\Documents\\GitHub\\ProxySC\\src\\proxyscraper.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\lawth\\OneDrive\\Documents\\GitHub\\proxygrabber\\src\\proxyscraper.csproj",
+        "projectUniqueName": "C:\\Users\\lawth\\OneDrive\\Documents\\GitHub\\ProxySC\\src\\proxyscraper.csproj",
         "projectName": "proxyscraper",
-        "projectPath": "C:\\Users\\lawth\\OneDrive\\Documents\\GitHub\\proxygrabber\\src\\proxyscraper.csproj",
+        "projectPath": "C:\\Users\\lawth\\OneDrive\\Documents\\GitHub\\ProxySC\\src\\proxyscraper.csproj",
         "packagesPath": "C:\\Users\\lawth\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\lawth\\OneDrive\\Documents\\GitHub\\proxygrabber\\src\\obj\\",
+        "outputPath": "C:\\Users\\lawth\\OneDrive\\Documents\\GitHub\\ProxySC\\src\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\lawth\\AppData\\Roaming\\NuGet\\NuGet.Config"

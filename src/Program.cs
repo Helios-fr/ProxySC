@@ -136,11 +136,11 @@ async Task main()
     Clear();
     DrawLogo();
 
-    Console.WriteLine("\x1b[32m1.\x1b[0m Scrape Proxies");
-    Console.WriteLine("\x1b[32m2.\x1b[0m Check Proxies");
-    Console.WriteLine("\x1b[32m3.\x1b[0m Upload Proxies");
-    Console.WriteLine("\x1b[33m4.\x1b[0m Find Proxies \x1b[31m* BETA *\x1b[0m");
-    Console.WriteLine("\x1b[31m5.\x1b[0m Exit");
+    Console.WriteLine("1. Scrape Proxies");
+    Console.WriteLine("2. Check Proxies");
+    Console.WriteLine("3. Upload Proxies");
+    Console.WriteLine("4. Find Proxies * BETA *");
+    Console.WriteLine("5. Exit");
     string action = GetInput("Select an option: ");
 
     if (action == "1")
@@ -221,7 +221,7 @@ async Task Scrape()
         }
         catch
         {
-            Console.WriteLine("\x1b[31m[-]\x1b[0m" + " Failed to scrape proxies from url: " + url + " - " + counter + "/" + urls.Length);
+            Console.WriteLine("[-]" + " Failed to scrape proxies from url: " + url + " - " + counter + "/" + urls.Length);
             return;
         }
 
@@ -231,7 +231,7 @@ async Task Scrape()
         // print the number of proxies scraped from the url in green
         Console.ForegroundColor = ConsoleColor.Green;
         // generate a - string with spaces to fill the rest of the line
-        Console.WriteLine("\x1b[32m[+]\x1b[0m" + " Scraped " + proxies.Length + " proxies from " + url + " - " + counter + "/" + urls.Length);
+        Console.WriteLine("[+]" + " Scraped " + proxies.Length + " proxies from " + url + " - " + counter + "/" + urls.Length);
         counter++;
 
         // loop through all the proxies in the proxies array and write them to unchecked.txt if they start with a number
@@ -350,7 +350,7 @@ async Task Check()
 
             // print the working proxy in green then a fraction and the total number of proxies
             
-            Console.WriteLine("\x1b[32m[+]\x1b[0m " + proxy + spaces + checkedProxies + "/" + proxiesToCheck.Length);
+            Console.WriteLine("[+] " + proxy + spaces + checkedProxies + "/" + proxiesToCheck.Length);
             checkedProxies++;
         }
         catch
@@ -362,7 +362,7 @@ async Task Check()
                 spaces += " ";
             }
             spaces += "- ";
-            Console.WriteLine("\x1b[31m[-]\x1b[0m " + proxy + spaces + checkedProxies + "/" + proxiesToCheck.Length);
+            Console.WriteLine("[-] " + proxy + spaces + checkedProxies + "/" + proxiesToCheck.Length);
             checkedProxies++;
         }
     }

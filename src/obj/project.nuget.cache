@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "SQT4fqgVz5d7BfGPbIcmlscgyp71FPgKboxsJ8iXgAlniwFOWl+WbSSz2QKBHjSR1843Ij2dbBWUhh1fRZmLCQ==",
+  "dgSpecHash": "F5hPEPnJON4qNoac+QfGuxlrH5MfTRak4LAXwzlxn20GAy5J9lnJ0m4f3yo64Mdk0CIJnOr9Ob9uw69Fs/43NQ==",
   "success": true,
-  "projectFilePath": "C:\\Users\\lawth\\OneDrive\\Documents\\GitHub\\proxygrabber\\src\\proxyscraper.csproj",
+  "projectFilePath": "C:\\Users\\lawth\\OneDrive\\Documents\\GitHub\\ProxySC\\src\\proxyscraper.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\lawth\\.nuget\\packages\\costura.fody\\5.7.0\\costura.fody.5.7.0.nupkg.sha512",
     "C:\\Users\\lawth\\.nuget\\packages\\fody\\6.5.5\\fody.6.5.5.nupkg.sha512",
