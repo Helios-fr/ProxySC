@@ -71,7 +71,12 @@ async Task Upload()
 string GetInput(string prompt)
 {
     Console.Write(prompt);
-    string input = Console.ReadLine();
+    string? input = Console.ReadLine();
+    if (input == null)
+    {
+        Console.WriteLine("Invalid input");
+        return GetInput(prompt);
+    }
     return input;
 }
 
