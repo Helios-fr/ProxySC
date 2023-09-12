@@ -40,4 +40,3 @@ Refer to the below sections for the features.
 ## Donation
 Any donation is apreciated, donations can be provided using the below cryptocurrencies.
 - **ETH: 0x65ced7F343115Eca8Ea6C027d4613d4Cac756288**
-- **MONERO: 47Hg2xqF4mXJUsPppzsbwn5nXtg5V1VsPaSTuTNv4CKbAEGGMbnRDWDjWhvhP62brcapnPvaVfYRGA1TjPmjvk7e4CG7LKC**
